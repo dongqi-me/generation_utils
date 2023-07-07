@@ -1,15 +1,17 @@
 import json
 import os
-import spacy
+import torch
 import numpy as np
-import evaluate
+from bert_score import score
 
-class MeteorCalculator:
+class BERTScoreCalculator:
     def __init__(self):
-        self.nlp = spacy.load('en_core_web_sm')
-        self.meteor = evaluate.load('meteor')
+        if torch.cuda.is_available():
+            self.device = 'cuda'
+        else:
+            self.device = 'cpu'
 
-    def compute_meteor(self, input_data):
+    def compute_bert_score(self, input_data):
         if not input_data:
             raise ValueError("Input data cannot be empty.")
 
@@ -20,31 +22,32 @@ class MeteorCalculator:
                 prediction = pair['prediction'].strip()
             except KeyError:
                 raise ValueError("Each dictionary in input data should contain 'reference' and 'prediction' keys.")
-                
-            scores = self.meteor.compute(predictions=[prediction], references=[reference])
-
-            # Round the results to 4 decimal places
-            scores = {k: round(v * 100, 4) for k, v in scores.items()}
+            
+            P, R, F1 = score([prediction], [reference], lang="en", model_type='bert-base-uncased', device=self.device)
+            scores = {
+                'precision': round(P.item() * 100, 4),
+                'recall': round(R.item() * 100, 4),
+                'f1': round(F1.item() * 100, 4)
+            }
             results.append(scores)
 
         average_scores = {k: round(np.mean([res[k] for res in results]), 4) for k in results[0]}
         results.append({'corpus_level': average_scores})
         return results
 
-    def compute_meteor_from_file(self, input_json_path, output_json_path):
+    def compute_bert_score_from_file(self, input_json_path, output_json_path):
         if not os.path.isfile(input_json_path):
             raise FileNotFoundError(f"{input_json_path} does not exist.")
 
         with open(input_json_path, 'r') as f:
             data = json.load(f)
-        results = self.compute_meteor(data)
+        results = self.compute_bert_score(data)
 
         with open(output_json_path, 'w') as f:
             json.dump(results, f, indent=4)
 
 if __name__ == '__main__':
-
-    meteor_calculator = MeteorCalculator()
+    bert_score_calculator = BERTScoreCalculator()
 
     input_data = [
         {"reference": "The cat sat on the mat. It was happy.", "prediction": "A cat was sitting on the mat. The cat seemed pleased."},
@@ -56,4 +59,4 @@ if __name__ == '__main__':
         json.dump(input_data, f)
 
     output_json_path = 'output.json'
-    meteor_calculator.compute_meteor_from_file(input_json_path, output_json_path)
+    bert_score_calculator.compute_bert_score_from_file(input_json_path, output_json_path)

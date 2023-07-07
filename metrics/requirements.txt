@@ -1,0 +1,6 @@
+datasets
+spacy
+rouge_score
+bert_score
+sacrebleu
+evaluate
