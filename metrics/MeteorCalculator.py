@@ -24,7 +24,7 @@ class MeteorCalculator:
             scores = self.meteor.compute(predictions=[prediction], references=[reference])
 
             # Round the results to 4 decimal places
-            scores = {k: round(v * 100, 4) for k, v in scores.items()}
+            scores = {k: round(v , 4) for k, v in scores.items()}
             results.append(scores)
 
         average_scores = {k: round(np.mean([res[k] for res in results]), 4) for k in results[0]}
