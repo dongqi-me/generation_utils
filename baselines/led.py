@@ -64,7 +64,7 @@ if __name__ == "__main__":
     hf_logging.set_verbosity_info()
 
     # Set the device to use for training/inference
-    os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "6"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Set random seeds
