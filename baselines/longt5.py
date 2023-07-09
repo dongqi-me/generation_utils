@@ -6,7 +6,7 @@ import random
 import nltk
 from datasets import load_dataset, load_metric
 from transformers import AutoTokenizer
-from transformers.models.led.modeling_led import LEDForConditionalGeneration
+from transformers.models.longt5.modeling_longt5 import LongT5ForConditionalGeneration
 from transformers import AutoModelForSeq2SeqLM, DataCollatorForSeq2Seq, Seq2SeqTrainingArguments, Seq2SeqTrainer
 import argparse
 from transformers import logging as hf_logging
@@ -54,7 +54,8 @@ def generate_answers(batch):
     input_ids = inputs_dict.input_ids.to(device)
     attention_mask = inputs_dict.attention_mask.to(device)
     output_ids = model.generate(
-        input_ids=input_ids, attention_mask=attention_mask, max_length=max_target_length, num_beams=4
+        input_ids=input_ids, attention_mask=attention_mask, max_length=max_target_length, min_length=min_target_length,
+        length_penalty=2.0, num_beams=4, early_stopping=True, no_repeat_ngram_size=3,
     )
     batch["Prediction"] = tokenizer.batch_decode(output_ids, skip_special_tokens=True)
     return batch
@@ -74,11 +75,13 @@ if __name__ == "__main__":
     output_file = "output.json"
 
     # Set the model checkpoint
-    model_checkpoint = "allenai/led-large-16384"
+    model_checkpoint = "google/long-t5-tglobal-large"
 
     # Define the maximum input and target lengths
     max_input_length = 16384
     max_target_length = 1024
+    min_target_length = 1024
+
 
     # Load the dataset
     raw_training = load_dataset('json', data_files='train.json')
@@ -95,12 +98,12 @@ if __name__ == "__main__":
     test_data = raw_test.map(preprocess_function, batched=True)
 
     # Load the LED model
-    model = LEDForConditionalGeneration.from_pretrained(model_checkpoint)
-    model.config.max_length = 1024
-    model.config.min_length = 512
-    model.config.length_penalty = 2.0
-    model.config.early_stopping = True
-    model.config.no_repeat_ngram_size = 3
+    model = LongT5ForConditionalGeneration.from_pretrained(model_checkpoint)
+    # model.config.max_length = 1024
+    # model.config.min_length = 512
+    # model.config.length_penalty = 2.0
+    # model.config.early_stopping = True
+    # model.config.no_repeat_ngram_size = 3
     model.to(device)
 
     # Set the training arguments
