@@ -62,7 +62,7 @@ if __name__ == "__main__":
     # Set HF logging to info
     hf_logging.set_verbosity_info()
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "4"
     torch.cuda.init()
     torch.cuda.empty_cache()
 
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     model_checkpoint = "allenai/led-large-16384"
 
     # Define the maximum input and target lengths
-    max_input_length = 16384
+    max_input_length = 8192
     max_target_length = 1024
 
     # Load the dataset
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     model.config.no_repeat_ngram_size = 3
 
     # Set the training arguments
-    batch_size = 1
+    batch_size = 2
     args = Seq2SeqTrainingArguments(
         output_dir="./",
         evaluation_strategy="epoch",
@@ -111,7 +111,7 @@ if __name__ == "__main__":
         per_device_eval_batch_size=batch_size,
         weight_decay=0.01,
         save_total_limit=3,
-        num_train_epochs=30,
+        num_train_epochs=20,
         predict_with_generate=True,
         warmup_ratio=0.1,
         optim="adafactor",

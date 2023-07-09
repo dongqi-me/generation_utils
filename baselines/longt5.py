@@ -63,7 +63,7 @@ if __name__ == "__main__":
     # Set HF logging to info
     hf_logging.set_verbosity_info()
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "6"
     torch.cuda.init()
     torch.cuda.empty_cache()
 
@@ -77,9 +77,9 @@ if __name__ == "__main__":
     model_checkpoint = "google/long-t5-tglobal-large"
 
     # Define the maximum input and target lengths
-    max_input_length = 16384
+    max_input_length = 8192
     max_target_length = 1024
-    min_target_length = 1024
+    min_target_length = 512
 
 
     # Load the dataset
@@ -109,7 +109,7 @@ if __name__ == "__main__":
         per_device_eval_batch_size=batch_size,
         weight_decay=0.01,
         save_total_limit=3,
-        num_train_epochs=30,
+        num_train_epochs=20,
         predict_with_generate=True,
         warmup_ratio=0.1,
         optim="adafactor",
