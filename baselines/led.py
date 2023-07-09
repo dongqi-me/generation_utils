@@ -64,7 +64,7 @@ if __name__ == "__main__":
     hf_logging.set_verbosity_info()
 
     # Set the device to use for training/inference
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "4"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Set random seeds
@@ -81,8 +81,7 @@ if __name__ == "__main__":
     max_target_length = 1024
 
     # Load the dataset
-    raw_training = load_dataset('json', data_files='train.json')
-    raw_test = load_dataset('json', data_files='test.json')
+    raw_datasets = load_dataset('json', data_files={'train': '../dataset/train.json', 'test': '../dataset/test.json'})
 
     # Load the metric for evaluation
     metric = load_metric("rouge")
@@ -91,8 +90,7 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 
     # Preprocess the dataset
-    training_data = raw_training.map(preprocess_function, batched=True)
-    test_data = raw_test.map(preprocess_function, batched=True)
+    tokenized_data = raw_datasets.map(preprocess_function, batched=True)
 
     # Load the LED model
     model = LEDForConditionalGeneration.from_pretrained(model_checkpoint)
@@ -106,6 +104,7 @@ if __name__ == "__main__":
     # Set the training arguments
     batch_size = 8
     args = Seq2SeqTrainingArguments(
+        output_dir="./",
         evaluation_strategy="epoch",
         logging_strategy="epoch",
         save_strategy="epoch",
@@ -131,8 +130,8 @@ if __name__ == "__main__":
     trainer = Seq2SeqTrainer(
         model,
         args,
-        train_dataset=training_data,
-        eval_dataset=test_data,
+        train_dataset=tokenized_data["train"],
+        eval_dataset=tokenized_data["test"],
         data_collator=data_collator,
         tokenizer=tokenizer,
         compute_metrics=compute_metrics
@@ -144,7 +143,7 @@ if __name__ == "__main__":
     # Generate summaries for the test set
     model.eval()
     with torch.no_grad():
-        result = raw_test.map(generate_answers, batched=True, batch_size=1)
+        result = raw_datasets['test'].map(generate_answers, batched=True, batch_size=1)
         result_df = pd.DataFrame(result)
 
     # Save the results to a CSV file
