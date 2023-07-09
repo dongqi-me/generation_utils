@@ -1,6 +1,6 @@
+import os
 import torch
 import pandas as pd
-import os
 import numpy as np
 import random
 import nltk
@@ -8,7 +8,6 @@ from datasets import load_dataset, load_metric
 from transformers import AutoTokenizer
 from transformers.models.longt5.modeling_longt5 import LongT5ForConditionalGeneration
 from transformers import AutoModelForSeq2SeqLM, DataCollatorForSeq2Seq, Seq2SeqTrainingArguments, Seq2SeqTrainer
-import argparse
 from transformers import logging as hf_logging
 
 # Set random seeds for reproducibility
@@ -51,8 +50,8 @@ def generate_answers(batch):
     inputs_dict = tokenizer(
         batch["Paper_Body"], max_length=max_input_length, padding=True, truncation=True, return_tensors="pt"
     )
-    input_ids = inputs_dict.input_ids.to(device)
-    attention_mask = inputs_dict.attention_mask.to(device)
+    input_ids = inputs_dict.input_ids.to("cuda")
+    attention_mask = inputs_dict.attention_mask.to("cuda")
     output_ids = model.generate(
         input_ids=input_ids, attention_mask=attention_mask, max_length=max_target_length, min_length=min_target_length,
         length_penalty=2.0, num_beams=4, early_stopping=True, no_repeat_ngram_size=3,
@@ -64,9 +63,9 @@ if __name__ == "__main__":
     # Set HF logging to info
     hf_logging.set_verbosity_info()
 
-    # Set the device to use for training/inference
     os.environ["CUDA_VISIBLE_DEVICES"] = "4"
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    torch.cuda.init()
+    torch.cuda.empty_cache()
 
     # Set random seeds
     set_seed(2023)
@@ -97,15 +96,9 @@ if __name__ == "__main__":
 
     # Load the LED model
     model = LongT5ForConditionalGeneration.from_pretrained(model_checkpoint)
-    # model.config.max_length = 1024
-    # model.config.min_length = 512
-    # model.config.length_penalty = 2.0
-    # model.config.early_stopping = True
-    # model.config.no_repeat_ngram_size = 3
-    model.to(device)
 
     # Set the training arguments
-    batch_size = 8
+    batch_size = 1
     args = Seq2SeqTrainingArguments(
         output_dir="./",
         evaluation_strategy="epoch",
