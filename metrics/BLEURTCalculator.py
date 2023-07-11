@@ -1,10 +1,11 @@
 import json
 import os
 import evaluate
+import datasets
 
 class BLEURTCalculator:
     def __init__(self):
-        self.scorer = BLEURTScorer()
+        self.bleurt = datasets.load_metric("bleurt")
 
     def compute_bleurt(self, input_data):
         if not input_data:
@@ -18,8 +19,8 @@ class BLEURTCalculator:
             except KeyError:
                 raise ValueError("Each dictionary in input data should contain 'reference' and 'prediction' keys.")
 
-            score = self.scorer.score(prediction, reference)
-            results.append({'bleurt': round(score, 4)})
+            score = self.bleurt.compute(predictions=[prediction], references=[reference])
+            results.append({'bleurt': round(score["scores"][0], 4)})
 
         average_score = round(sum([res['bleurt'] for res in results]) / len(results), 4)
         results.append({'corpus_level': {'bleurt': average_score}})

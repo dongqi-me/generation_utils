@@ -4,3 +4,8 @@ rouge_score
 bert_score
 sacrebleu
 evaluate
+torch
+pandas
+numpy
+nltk
+transformers
