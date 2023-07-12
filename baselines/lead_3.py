@@ -44,6 +44,6 @@ if __name__ == "__main__":
     test_output = lead_three_baseline(test_data)
 
     with open(output_file, 'w') as f:
-        json.dump(test_output, f)
+        json.dump(test_output, f, indent=4)
 
 
