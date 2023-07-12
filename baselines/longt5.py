@@ -42,6 +42,8 @@ def compute_metrics(eval_pred):
     
     result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
     result = {key: value.mid.fmeasure * 100 for key, value in result.items()}
+
+    print(result)
     
     return {k: round(v, 4) for k, v in result.items()}
 
@@ -61,7 +63,7 @@ def generate_answers(batch):
 
 if __name__ == "__main__":
     # Set HF logging to info
-    hf_logging.set_verbosity_info()
+    # hf_logging.set_verbosity_info()
 
     os.environ["CUDA_VISIBLE_DEVICES"] = "6"
     torch.cuda.init()
@@ -109,14 +111,15 @@ if __name__ == "__main__":
         per_device_eval_batch_size=batch_size,
         weight_decay=0.01,
         save_total_limit=3,
-        num_train_epochs=20,
+        num_train_epochs=15,
         predict_with_generate=True,
         warmup_ratio=0.1,
         optim="adafactor",
         load_best_model_at_end=True,
         group_by_length=True,
-        fp16=False,
+        fp16=True,
         lr_scheduler_type="cosine",
+        gradient_accumulation_steps=16,
     )
 
     # Create the data collator
