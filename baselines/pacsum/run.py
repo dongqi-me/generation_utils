@@ -8,11 +8,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, choices = ['tune', 'test'], help='tune or test', default='test')
     parser.add_argument('--rep', type=str, choices = ['tfidf', 'bert'], help='tfidf or bert', default='bert')
-    parser.add_argument('--extract_num', type=int, default=3, help='number of extracted sentences')
+    
     parser.add_argument('--bert_config_file', type=str, default='pacsum_models/bert_config.json', help='bert configuration file')
     parser.add_argument('--bert_model_file', type=str, default='pacsum_models/pytorch_model_finetuned.bin', help='bert model file')
     parser.add_argument('--bert_vocab_file', type=str,  default='pacsum_models/vocab.txt',help='bert vocabulary file')
-
+    parser.add_argument('--n_sents', type=int, default=25)
     parser.add_argument('--beta', type=float, default=0., help='beta')
     parser.add_argument('--lambda1', type=float, default=0., help='lambda1')
     parser.add_argument('--lambda2', type=float, default=1., help='lambda2')
@@ -45,6 +45,7 @@ if __name__ == '__main__':
     elif args.rep == 'bert':
         extractor = PacSumExtractorWithBert(bert_model_file = args.bert_model_file,
                                             bert_config_file = args.bert_config_file,
+                                            extract_num=args.n_sents,
                                             beta = args.beta,
                                             lambda1=args.lambda1,
                                             lambda2=args.lambda2)

@@ -1,9 +1,14 @@
-# training 长度, 保留完整的句子
-
 import nltk
 import json
 from tqdm import tqdm
-
+import random
+import numpy as np
+import os
+# Set random seeds for reproducibility
+def set_seed(seed):
+    np.random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
 
 def tail_k_baseline(input_data, avg_tok_num=695):
     if not input_data:
@@ -36,7 +41,7 @@ def tail_k_baseline(input_data, avg_tok_num=695):
     return all_pairs
 
 if __name__ == "__main__":
-
+    set_seed(2023)
     with open("test.json") as f:
         test_data=json.load(f)
 

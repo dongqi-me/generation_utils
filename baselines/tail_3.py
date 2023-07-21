@@ -1,6 +1,14 @@
 import nltk
 import json
 from tqdm import tqdm
+import random
+import numpy as np
+import os
+# Set random seeds for reproducibility
+def set_seed(seed):
+    np.random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
 
 def tail_three_baseline(input_data, n_sent=3):
     if not input_data:
@@ -22,7 +30,7 @@ def tail_three_baseline(input_data, n_sent=3):
     return all_pairs
 
 if __name__ == "__main__":
-
+    set_seed(2023)
     with open("test.json") as f:
         test_data=json.load(f)
 
