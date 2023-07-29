@@ -40,7 +40,7 @@ if __name__ == "__main__":
         test_data = json.load(f)
 
     test_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in test_data]
-    test_output = textrank_baseline(test_data, num_words=200)
+    test_output = textrank_baseline(test_data, num_words=695)
 
     with open(output_file, 'w') as f:
         json.dump(test_output, f, indent=4)

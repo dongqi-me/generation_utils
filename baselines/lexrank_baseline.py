@@ -40,18 +40,18 @@ if __name__ == "__main__":
     output_file = "lexrank_output.json"
 
     # learn tf-idf on training data
-    train_file = "val.json"
+    train_file = "train.json"
     with open(train_file) as f:
         train_data = json.load(f)
-    documents = [instance['Paper_Body'] for instance in train_data][:3]
+    documents = [instance['Paper_Body'] for instance in train_data]
 
     lxr = LexRank(documents, stopwords=STOPWORDS['en'])
 
     with open(input_file) as f:
         test_data = json.load(f)
 
-    test_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in test_data][:3]
-    test_output = lexrank_baseline(test_data, lxr, n_sents=3) # set sentence number
+    test_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in test_data]
+    test_output = lexrank_baseline(test_data, lxr, n_sents=25) # set sentence number
 
     with open(output_file, 'w') as f:
         json.dump(test_output, f, indent=4)

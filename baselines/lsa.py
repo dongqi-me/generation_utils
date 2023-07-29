@@ -206,10 +206,10 @@ if __name__ == "__main__":
     # Set the input and output file paths
     input_file = "test.json"
     output_file = "lsa_output.json"
-    n_sent = 3
+    n_sent = 25
 
     with open(input_file) as f:
-        test_data = json.load(f)[:3]
+        test_data = json.load(f)
 
     test_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in test_data]
 
