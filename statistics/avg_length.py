@@ -48,8 +48,8 @@ if __name__ == "__main__":
 
     train_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in train_data]
 
-    train_length_stat = calc_length_stats(train_data)
-    print(train_length_stat["avg_token_article"], train_length_stat["avg_token_reference"], train_length_stat["avg_sent_article"], train_length_stat["avg_sent_reference"])
+    #train_length_stat = calc_length_stats(train_data)
+    #print(train_length_stat["avg_token_article"], train_length_stat["avg_token_reference"], train_length_stat["avg_sent_article"], train_length_stat["avg_sent_reference"])
     # 7766.9098 695.0924 290.6458 25.1779
 
     with open("val.json") as f:
@@ -57,8 +57,8 @@ if __name__ == "__main__":
 
     val_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in val_data]
 
-    val_length_stat = calc_length_stats(val_data)
-    print(val_length_stat["avg_token_article"], val_length_stat["avg_token_reference"], val_length_stat["avg_sent_article"], val_length_stat["avg_sent_reference"])
+    #val_length_stat = calc_length_stats(val_data)
+    #print(val_length_stat["avg_token_article"], val_length_stat["avg_token_reference"], val_length_stat["avg_sent_article"], val_length_stat["avg_sent_reference"])
     # 7751.0128 691.1018 291.2491 25.0275
 
     with open("test.json") as f:
@@ -66,6 +66,13 @@ if __name__ == "__main__":
 
     test_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in test_data]
 
-    test_length_stat = calc_length_stats(test_data)
-    print(test_length_stat["avg_token_article"], test_length_stat["avg_token_reference"], test_length_stat["avg_sent_article"], test_length_stat["avg_sent_reference"])
+    #test_length_stat = calc_length_stats(test_data)
+    #print(test_length_stat["avg_token_article"], test_length_stat["avg_token_reference"], test_length_stat["avg_sent_article"], test_length_stat["avg_sent_reference"])
     # 7722.7207 696.1936 288.7931 25.2863
+
+    with open("statistics_results/avg_length.json", 'w') as f:
+        data = train_data+val_data+test_data
+        data_len_stat = calc_length_stats(data)
+        json.dump(data_len_stat, f)
+    
+    

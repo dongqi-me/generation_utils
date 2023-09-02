@@ -53,8 +53,8 @@ if __name__ == "__main__":
 
     train_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in train_data]
 
-    train_length_stat = calc_readability(train_data)
-    print(train_length_stat)
+    #train_length_stat = calc_readability(train_data)
+    #print(train_length_stat)
     #     {'article_fkgl': 14.6068, 'article_gfi': 12.9178, 'article_smog': 14.8399, 'article_ari': 17.9963, 'article_cli': 13.9581, 'reference_fkgl': 13.323, 'reference_gfi': 14.109, 'reference_smog': 14.8533, 'reference_ari': 16.3352, 'reference_cli': 13.9404}
 
     with open("val.json") as f:
@@ -62,8 +62,8 @@ if __name__ == "__main__":
 
     val_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in val_data]
 
-    val_length_stat = calc_readability(val_data)
-    print(val_length_stat)
+    #val_length_stat = calc_readability(val_data)
+    #print(val_length_stat)
     # {'article_fkgl': 14.5401, 'article_gfi': 12.8818, 'article_smog': 14.7519, 'article_ari': 17.8989, 'article_cli': 13.9372, 'reference_fkgl': 13.3059, 'reference_gfi': 14.0982, 'reference_smog': 14.822, 'reference_ari': 16.3122, 'reference_cli': 13.9137}
 
     with open("test.json") as f:
@@ -71,7 +71,13 @@ if __name__ == "__main__":
 
     test_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in test_data]
 
-    test_length_stat = calc_readability(test_data)
-    print(test_length_stat)
+    #test_length_stat = calc_readability(test_data)
+    #print(test_length_stat)
     
     # {'article_fkgl': 14.285, 'article_gfi': 12.6756, 'article_smog': 14.8245, 'article_ari': 17.4842, 'article_cli': 13.7474, 'reference_fkgl': 13.2739, 'reference_gfi': 14.0676, 'reference_smog': 14.815, 'reference_ari': 16.2608, 'reference_cli': 13.9111}
+
+
+    with open("statistics_results/readability.json", 'w') as f:
+        data = train_data+val_data+test_data
+        data_readability_stat = calc_readability(data)
+        json.dump(data_readability_stat, f)

@@ -40,7 +40,7 @@ def calc_ngram_novelty(input_data):
     
 
         
-    return {"1gram_novelty":round(np.mean(one_gram_novelty), 4), "2gram_novelty":round(np.mean(two_gram_novelty), 4), "3gram_novelty":round(np.mean(three_gram_novelty), 4), "4gram_novelty":round(np.mean(four_gram_novelty), 4)}
+    return {"1gram_novelty":round(np.mean(one_gram_novelty), 4), "2gram_novelty":round(np.mean(two_gram_novelty), 4), "3gram_novelty":round(np.mean(three_gram_novelty), 4), "4gram_novelty":round(np.mean(four_gram_novelty), 4), "1gram_list":one_gram_novelty, "2gram_list":two_gram_novelty, "3gram_list":three_gram_novelty, "4gram_list":four_gram_novelty}
 
 if __name__ == "__main__":
     with open("train.json") as f:
@@ -48,8 +48,8 @@ if __name__ == "__main__":
 
     train_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in train_data]
 
-    train_length_stat = calc_ngram_novelty(train_data)
-    print(train_length_stat["1gram_novelty"], train_length_stat["2gram_novelty"], train_length_stat["3gram_novelty"], train_length_stat["4gram_novelty"])
+    #train_length_stat = calc_ngram_novelty(train_data)
+    #print(train_length_stat["1gram_novelty"], train_length_stat["2gram_novelty"], train_length_stat["3gram_novelty"], train_length_stat["4gram_novelty"])
     # 0.5232 0.9128 0.9845 0.9937
 
     with open("val.json") as f:
@@ -57,8 +57,8 @@ if __name__ == "__main__":
 
     val_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in val_data]
 
-    val_length_stat = calc_ngram_novelty(val_data)
-    print(val_length_stat["1gram_novelty"], val_length_stat["2gram_novelty"], val_length_stat["3gram_novelty"], val_length_stat["4gram_novelty"])
+    #val_length_stat = calc_ngram_novelty(val_data)
+    #print(val_length_stat["1gram_novelty"], val_length_stat["2gram_novelty"], val_length_stat["3gram_novelty"], val_length_stat["4gram_novelty"])
     # 0.5236 0.9133 0.9845 0.9936
 
     with open("test.json") as f:
@@ -66,6 +66,12 @@ if __name__ == "__main__":
 
     test_data = [{"article":instance['Paper_Body'], "reference": instance['News_Body']} for instance in test_data]
 
-    test_length_stat = calc_ngram_novelty(test_data)
-    print(test_length_stat["1gram_novelty"], test_length_stat["2gram_novelty"], test_length_stat["3gram_novelty"], test_length_stat["4gram_novelty"])
+    #test_length_stat = calc_ngram_novelty(test_data)
+    #print(test_length_stat["1gram_novelty"], test_length_stat["2gram_novelty"], test_length_stat["3gram_novelty"], test_length_stat["4gram_novelty"])
     # 0.5225 0.9125 0.9845 0.9936
+
+
+    with open("statistics_results/ngram_novelty.json", 'w') as f:
+        data = train_data+val_data+test_data
+        data_ngram_stat = calc_ngram_novelty(data)
+        json.dump(data_ngram_stat, f)
