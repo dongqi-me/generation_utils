@@ -1,6 +1,5 @@
 import json
 import os
-import spacy
 import numpy as np
 import evaluate
 
