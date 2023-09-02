@@ -1,12 +1,10 @@
 import json
 import os
-import spacy
 import numpy as np
 import evaluate
 
 class MeteorCalculator:
     def __init__(self):
-        self.nlp = spacy.load('en_core_web_sm')
         self.meteor = evaluate.load('meteor')
 
     def compute_meteor(self, input_data):
