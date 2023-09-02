@@ -1,17 +1,22 @@
 import json
 import os
-import spacy
 import numpy as np
+from nltk.tokenize import sent_tokenize
+import nltk
 from datasets import load_metric
+
+# Download the Punkt tokenizer model
+nltk.download('punkt')
 
 class RougeCalculator:
     def __init__(self):
-        self.nlp = spacy.load('en_core_web_sm')
+        # Removed spacy's model initialization
         self.rouge = load_metric('rouge')
 
     def add_newlines_to_sentences(self, text):
-        doc = self.nlp(text)
-        return '\n'.join([sent.text for sent in doc.sents])
+        # Use nltk's sentence tokenizer
+        sentences = sent_tokenize(text)
+        return '\n'.join(sentences)
 
     def compute_rouge(self, input_data):
         if not input_data:
