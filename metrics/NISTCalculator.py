@@ -19,7 +19,7 @@ class NISTCalculator:
             except KeyError:
                 raise ValueError("Each dictionary in input data should contain 'reference' and 'prediction' keys.")
                 
-            score = self.nist.compute(prediction, [reference])
+            score = self.nist.compute(predictions = [prediction], references = [reference])
 
             # Round the results to 4 decimal places
             nist_score = round(score["nist_mt"], 4)
